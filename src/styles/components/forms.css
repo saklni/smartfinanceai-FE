@@ -1,0 +1,5 @@
+.grid-form{grid-template-columns:1fr 1fr}
+
+.span-2{grid-column:span 2}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}

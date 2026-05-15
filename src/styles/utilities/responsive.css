@@ -1,0 +1,11 @@
+@media(max-width:1050px){.hero,.feature-grid,.stats,.dashboard-grid,.tx-layout,.rec-grid,.profile-grid{grid-template-columns:1fr}.app-shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.sidebar nav{grid-template-columns:repeat(4,1fr)}.side-card{display:none}.topbar{padding:16px 20px}.page{padding:10px 20px 30px}}
+
+@media(max-width:650px){.landing-nav{padding:18px 20px}.hero{padding:30px 20px}.hero-copy h1{font-size:42px}.phone-card{min-height:auto}.feature-grid{padding:20px}.grid-form,.two{grid-template-columns:1fr}.span-2{grid-column:auto}.sidebar nav{grid-template-columns:1fr 1fr}.search{display:none}.page-title{align-items:flex-start;gap:12px;flex-direction:column}.stats{grid-template-columns:1fr}.rec-grid{grid-template-columns:1fr}.tx-item{grid-template-columns:auto 1fr}.tx-item strong,.tx-item button{justify-self:start}}
+
+@media(max-width:1050px){.nav-menu{display:none}.pro-hero{min-height:auto}.hero-visual{min-height:560px}.landing-bottom{grid-template-columns:1fr}.transaction-float{left:0}.tag-left{left:10px}.tag-right{right:10px}}
+
+@media(max-width:650px){.pro-nav{height:auto}.brand-pro b{font-size:18px}.nav-actions{gap:10px}.nav-actions a:first-child{display:none}.pro-copy h1{font-size:46px}.hero-metrics{grid-template-columns:1fr}.hero-visual{min-height:auto;margin-top:24px}.dashboard-preview{border-radius:30px;padding:18px}.dashboard-preview:before{border-radius:30px}.preview-top h2{font-size:34px}.floating-tag,.transaction-float{position:relative;left:auto;right:auto;top:auto;bottom:auto;margin:12px 0;width:100%}.landing-bottom{padding:0 20px 60px}.bottom-card h2{font-size:28px}.pro-features{margin-top:0}}
+
+@media(max-width:1050px){.startup-section{grid-template-columns:1fr}.workflow-card{animation:none}}
+
+@media(max-width:650px){.theme-toggle:not(.compact){min-width:46px;width:46px;padding:0;justify-content:center}.theme-toggle:not(.compact) b{display:none}.startup-section{padding:20px 20px 60px}.section-copy h2{font-size:36px}.workflow-card{padding:18px}.workflow-card div{align-items:flex-start;flex-direction:column}.sk-panel{height:280px}}

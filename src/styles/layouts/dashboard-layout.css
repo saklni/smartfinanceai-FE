@@ -1,0 +1,3 @@
+.app-shell{min-height:100vh;display:grid;grid-template-columns:290px 1fr}
+
+.content{min-width:0}

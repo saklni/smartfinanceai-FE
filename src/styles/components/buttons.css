@@ -1,0 +1,29 @@
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:18px;background:linear-gradient(135deg,#16a34a,#22c55e);color:white;font-weight:800;padding:14px 20px;box-shadow:0 14px 34px rgba(34,197,94,.28);cursor:pointer;transition:.25s}
+
+.btn:hover{transform:translateY(-2px);box-shadow:0 18px 42px rgba(34,197,94,.34)}
+
+.btn.small{padding:10px 16px;border-radius:14px}
+
+.btn.full{width:100%}
+
+.btn.ghost{background:rgba(255,255,255,.75);color:#0f172a;border:1px solid rgba(15,23,42,.08);box-shadow:none}
+
+.icon-btn{width:46px;height:46px;border:1px solid var(--line);background:#fff;border-radius:16px;display:grid;place-items:center}
+
+.btn-glow{position:relative;overflow:hidden}
+
+.btn-glow:after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.45),transparent 70%);transform:translateX(-110%);animation:shine 2.8s ease-in-out infinite}
+
+.theme-toggle{height:44px;min-width:92px;border:1px solid rgba(15,23,42,.10);background:rgba(255,255,255,.72);color:#0f172a;border-radius:999px;display:inline-flex;align-items:center;gap:9px;padding:5px 12px 5px 6px;font-weight:900;cursor:pointer;box-shadow:0 12px 30px rgba(15,23,42,.06);backdrop-filter:blur(16px)}
+
+.theme-toggle.compact{min-width:46px;width:46px;padding:0;justify-content:center}
+
+.theme-toggle:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 16px 38px rgba(15,23,42,.10)}
+
+.theme-toggle:active,.pulse-click:active,.btn:active{transform:scale(.97)}
+
+.icon-btn{cursor:pointer;transition:.22s}
+
+.icon-btn:hover{transform:translateY(-2px) rotate(-4deg);box-shadow:0 14px 34px rgba(15,23,42,.10)}
+
+.btn:disabled{opacity:.65;cursor:not-allowed;transform:none;box-shadow:none}

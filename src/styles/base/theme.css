@@ -1,0 +1,39 @@
+.btn.ghost.dark{background:#f8fafc}
+
+.dark-card{background:linear-gradient(135deg,#07120d,#064e3b);color:white}
+
+.dark-card p{color:#bbf7d0}
+
+/* Startup polish: dark mode, micro interactions, skeleton loading, scroll animation, parallax feel */
+
+[data-theme="dark"]{color-scheme:dark;--bg:#07120d;--card:#0d1f17;--line:rgba(148,163,184,.18);--muted:#94a3b8;--shadow:0 24px 70px rgba(0,0,0,.28)}
+
+[data-theme="dark"] body{background:#07120d;color:#e5f7ed}
+
+[data-theme="dark"] .landing,[data-theme="dark"] .landing-pro{background:radial-gradient(circle at 15% 15%,rgba(34,197,94,.16),transparent 30%),linear-gradient(135deg,#06110c 0%,#081b12 48%,#061018 100%)}
+
+[data-theme="dark"] .hero-copy h1,[data-theme="dark"] .section-copy h2,[data-theme="dark"] .brand b,[data-theme="dark"] .page-title h1,[data-theme="dark"] .panel h2,[data-theme="dark"] .panel-head h2{color:#f8fafc}
+
+[data-theme="dark"] .hero-copy p,[data-theme="dark"] .section-copy p,[data-theme="dark"] .feature p,[data-theme="dark"] .panel-head span,[data-theme="dark"] .stat-card p,[data-theme="dark"] .stat-card span,[data-theme="dark"] .tx-item p,[data-theme="dark"] .profile-card p,[data-theme="dark"] .bottom-card p{color:#9fb1a7}
+
+[data-theme="dark"] .nav-menu,[data-theme="dark"] .nav-actions{color:#e5f7ed}
+
+[data-theme="dark"] .btn.ghost,[data-theme="dark"] .glass-btn,[data-theme="dark"] .theme-toggle{background:rgba(13,31,23,.76);border-color:rgba(148,163,184,.18);color:#f8fafc}
+
+[data-theme="dark"] .feature,[data-theme="dark"] .panel,[data-theme="dark"] .stat-card,[data-theme="dark"] .auth-card,[data-theme="dark"] .dashboard-preview,[data-theme="dark"] .metric-card,[data-theme="dark"] .transaction-float,[data-theme="dark"] .floating-tag,[data-theme="dark"] .workflow-card,[data-theme="dark"] .search,[data-theme="dark"] .icon-btn,[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] .tx-item,[data-theme="dark"] .light-card,[data-theme="dark"] .preview-grid div{background:rgba(13,31,23,.78);border-color:rgba(148,163,184,.18);color:#f8fafc;box-shadow:0 22px 70px rgba(0,0,0,.24)}
+
+[data-theme="dark"] input,[data-theme="dark"] select{background:#0b1912}
+
+[data-theme="dark"] label,[data-theme="dark"] .profile-metrics b,[data-theme="dark"] .workflow-card span,[data-theme="dark"] .metric-card strong,[data-theme="dark"] .preview-grid b,[data-theme="dark"] .mini-transaction p{color:#f8fafc}
+
+[data-theme="dark"] .profile-metrics span,[data-theme="dark"] .workflow-card div{background:#0a1912;border-color:rgba(148,163,184,.18);color:#9fb1a7}
+
+[data-theme="dark"] .sidebar{background:#030805}
+
+[data-theme="dark"] .skeleton{background:linear-gradient(90deg,#10231a,#193224,#10231a);background-size:220% 100%}
+
+[data-theme="dark"] .progress{background:#10231a}
+
+[data-theme="dark"] .mini-transaction{border-top-color:rgba(148,163,184,.18)}
+
+[data-theme="dark"] .ambient{opacity:.4}

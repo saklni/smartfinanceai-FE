@@ -1,0 +1,14 @@
+.profile-grid{display:grid;grid-template-columns:360px 1fr;gap:18px}
+
+.profile-card{text-align:center}
+
+.big-avatar{width:96px;height:96px;margin:12px auto 18px;border-radius:32px;background:linear-gradient(135deg,#16a34a,#22c55e);color:white;display:grid;place-items:center;font-size:30px;font-weight:900}
+
+.profile-card p{color:#64748b}
+
+.profile-metrics{display:grid;gap:12px;margin-top:22px}
+
+.profile-metrics span{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid var(--line);padding:14px;border-radius:16px;color:#64748b}
+
+.profile-metrics b{color:#0f172a}
+.profile-card h2{margin-bottom:6px}.profile-grid .tx-form select{min-height:48px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:0 14px;color:#0f172a}.profile-grid .tx-form input{min-height:48px}@media(max-width:920px){.profile-grid{grid-template-columns:1fr}}

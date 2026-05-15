@@ -1,0 +1,9 @@
+.reveal-up{animation:revealUp .8s ease both}
+
+.reveal-float{animation:revealScale .9s .12s ease both}
+
+.magnetic:hover{transform:perspective(900px) rotateX(3deg) rotateY(-4deg) translateY(-9px)}
+
+.scroll-reveal{opacity:0;transform:translateY(34px);transition:opacity .8s ease,transform .8s ease}
+
+.scroll-reveal.is-visible{opacity:1;transform:none}

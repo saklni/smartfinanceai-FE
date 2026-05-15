@@ -1,0 +1,59 @@
+.brand{display:flex;align-items:center;gap:12px}
+
+.brand b{font-size:20px}
+
+.brand span{color:#22c55e}
+
+.brand.center{justify-content:center}
+
+.brand-mark{width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;display:grid;place-items:center;box-shadow:0 14px 34px rgba(34,197,94,.25)}
+
+.nav-actions{display:flex;align-items:center;gap:18px;font-weight:800}
+
+.sidebar{position:sticky;top:0;height:100vh;padding:24px;background:#07120d;color:white;display:flex;flex-direction:column}
+
+.sidebar .brand{margin-bottom:34px}
+
+.sidebar .brand b{display:block}
+
+.sidebar .brand span{display:block;color:#94a3b8;font-size:13px;margin-top:3px}
+
+.sidebar nav{display:grid;gap:8px}
+
+.nav-link{display:flex;align-items:center;gap:13px;padding:15px 16px;border-radius:18px;color:#cbd5e1;font-weight:800;transition:.2s}
+
+.nav-link:hover,.nav-link.active{background:rgba(34,197,94,.16);color:#fff}
+
+.side-card{margin-top:auto;border:1px solid rgba(255,255,255,.09);background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(255,255,255,.04));border-radius:24px;padding:20px}
+
+.side-card p{margin:0 0 8px;color:#86efac}
+
+.topbar{height:84px;display:flex;align-items:center;justify-content:space-between;padding:18px 34px}
+
+.search{width:min(520px,55vw);display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:0 14px;box-shadow:0 10px 30px rgba(15,23,42,.04)}
+
+.search input{border:0;box-shadow:none;background:transparent}
+
+.avatar{width:46px;height:46px;border-radius:16px;background:#dcfce7;color:#15803d;display:grid;place-items:center;font-weight:900}
+
+.brand-pro{transition:.25s}
+
+.brand-pro:hover{transform:translateY(-2px)}
+
+.nav-menu{display:flex;align-items:center;gap:30px;font-weight:800;color:#334155}
+
+.nav-menu a{position:relative}
+
+.nav-menu a:after{content:'';position:absolute;left:0;right:100%;bottom:-8px;height:3px;border-radius:99px;background:#22c55e;transition:.25s}
+
+.nav-menu a:hover:after{right:0}
+
+.nav-cta{border-radius:20px}
+
+.avatar{transition:.22s}
+
+.avatar:hover{transform:scale(1.06) rotate(2deg)}
+
+.nav-link:active,.delete:active{transform:scale(.96)}
+
+.logout-link{margin-top:auto;width:100%;border:0;cursor:pointer;text-align:left;background:transparent;color:inherit}

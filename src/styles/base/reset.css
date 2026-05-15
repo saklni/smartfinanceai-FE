@@ -1,0 +1,15 @@
+*{box-sizing:border-box}
+
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:#0f172a}
+
+a{text-decoration:none;color:inherit}
+
+button,input,select{font:inherit}
+
+input,select{width:100%;border:1px solid var(--line);border-radius:16px;padding:13px 14px;background:#fff;outline:none;transition:.2s}
+
+label{display:grid;gap:8px;font-weight:700;color:#334155}
+
+/* Premium landing animation upgrade */
+
+body,.landing,.panel,.feature,.stat-card,.auth-card,.bottom-card,.dashboard-preview,.metric-card,.workflow-card,.search,.tx-item,input,select{transition:background .28s ease,color .28s ease,border-color .28s ease,box-shadow .28s ease,transform .22s ease}
