@@ -334,3 +334,135 @@
 .auth-switch a:hover {
   text-decoration: underline;
 }
+
+/* ─── Forgot Password ─────────────────────────────────────────────────── */
+
+/* Link "Lupa password?" di bawah field password */
+.forgot-password-link {
+  text-align: right;
+  margin-top: -8px;
+  margin-bottom: 4px;
+}
+
+.forgot-password-link a {
+  font-size: 13px;
+  color: #16a34a;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-password-link a:hover {
+  text-decoration: underline;
+}
+
+/* Step indicator */
+.fp-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0 4px;
+  gap: 0;
+}
+
+.fp-step {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.fp-step-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+
+.fp-step.active .fp-step-dot {
+  border-color: #16a34a;
+  background: #16a34a;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+}
+
+.fp-step.done .fp-step-dot {
+  border-color: #16a34a;
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.fp-step-line {
+  width: 48px;
+  height: 2px;
+  background: #e2e8f0;
+  transition: background .2s;
+}
+
+.fp-step.done .fp-step-line {
+  background: #16a34a;
+}
+
+/* Auth icon wrap (untuk KeyRound di header) */
+.auth-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(22, 163, 74, 0.1);
+  color: #16a34a;
+  margin: 8px auto 0;
+}
+
+/* OTP input styling (besar dan centered) */
+.otp-input {
+  text-align: center;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  letter-spacing: 8px !important;
+  font-family: var(--font-mono, monospace) !important;
+  padding: 14px !important;
+}
+
+/* Link button (teks saja, untuk resend) */
+.link-button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: none;
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 0;
+  margin-top: 4px;
+  transition: opacity .15s;
+}
+
+.link-button:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.link-button:not(:disabled):hover {
+  text-decoration: underline;
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin .8s linear infinite;
+}

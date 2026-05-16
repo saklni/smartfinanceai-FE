@@ -41,6 +41,9 @@ export default function Auth() {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMsg, setSuccessMsg] = useState(
+    location.state?.passwordReset ? 'Password berhasil diubah! Silakan masuk dengan password baru.' : ''
+  )
 
   const googleReady = useGoogleScript(env.googleClientId)
 
@@ -181,6 +184,7 @@ export default function Auth() {
           </p>
         </div>
 
+        {successMsg && <div className="form-alert success">{successMsg}</div>}
         {location.state?.reason === 'session_expired' && (
           <div className="form-alert error">Sesi kamu berakhir. Silakan masuk kembali.</div>
         )}
@@ -282,6 +286,12 @@ export default function Auth() {
               </button>
             </div>
           </label>
+
+          {!isRegister && (
+            <div className="forgot-password-link">
+              <Link to="/forgot-password">Lupa password?</Link>
+            </div>
+          )}
 
           {isRegister && (
             <label className="form-group">
