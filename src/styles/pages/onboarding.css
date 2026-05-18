@@ -453,3 +453,131 @@
   }
 }
 .onboarding-shell.single{grid-template-columns:1fr;max-width:720px}
+
+
+/* Dark mode khusus halaman onboarding */
+[data-theme='dark'] .onboarding-page {
+  background:
+    radial-gradient(circle at top left, rgba(34, 197, 94, 0.18), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.10), transparent 32%),
+    linear-gradient(135deg, #020617 0%, #06130d 45%, #0b1f17 100%);
+  color: #f8fafc;
+}
+
+[data-theme='dark'] .onboarding-card {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.94),
+    rgba(8, 28, 20, 0.94)
+  );
+  border-color: rgba(148, 163, 184, 0.18);
+  color: #f8fafc;
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .onboarding-loading h1,
+[data-theme='dark'] .step-heading h2,
+[data-theme='dark'] .form-group > span,
+[data-theme='dark'] .choice-card span,
+[data-theme='dark'] .choice-card strong,
+[data-theme='dark'] .onboarding-card h1,
+[data-theme='dark'] .onboarding-card h2 {
+  color: #f8fafc;
+}
+
+[data-theme='dark'] .onboarding-loading p,
+[data-theme='dark'] .step-heading p,
+[data-theme='dark'] .step-indicator span,
+[data-theme='dark'] .choice-card small {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .step-icon {
+  background: rgba(34, 197, 94, 0.14);
+  color: #4ade80;
+}
+
+[data-theme='dark'] .form-group input {
+  background: rgba(15, 23, 42, 0.88);
+  border-color: rgba(148, 163, 184, 0.24);
+  color: #f8fafc;
+}
+
+[data-theme='dark'] .form-group input::placeholder {
+  color: #64748b;
+}
+
+[data-theme='dark'] .form-group input:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.16);
+}
+
+[data-theme='dark'] .choice-card {
+  background: rgba(15, 23, 42, 0.72);
+  border-color: rgba(148, 163, 184, 0.20);
+  color: #f8fafc;
+}
+
+[data-theme='dark'] .choice-card:hover {
+  border-color: rgba(34, 197, 94, 0.48);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+}
+
+[data-theme='dark'] .choice-card.selected {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.62);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+}
+
+[data-theme='dark'] .step-dots button {
+  background: rgba(148, 163, 184, 0.26);
+}
+
+[data-theme='dark'] .step-dots button.active {
+  background: #22c55e;
+}
+
+[data-theme='dark'] .onboarding-actions {
+  border-top-color: rgba(148, 163, 184, 0.18);
+}
+
+[data-theme='dark'] .completion-note {
+  background: rgba(34, 197, 94, 0.10);
+  border-color: rgba(34, 197, 94, 0.22);
+  color: #4ade80;
+}
+
+[data-theme='dark'] .completion-note p {
+  color: #bbf7d0;
+}
+
+[data-theme='dark'] .form-alert.error {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.24);
+  color: #fca5a5;
+}
+
+[data-theme='dark'] .onboarding-visual {
+  background:
+    linear-gradient(145deg, rgba(2, 6, 23, 0.96), rgba(6, 78, 59, 0.88)),
+    radial-gradient(circle at top right, rgba(34, 197, 94, 0.18), transparent 30%);
+  border-color: rgba(148, 163, 184, 0.18);
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .visual-card {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme='dark'] .progress-track {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme='dark'] .progress-fill {
+  background: #22c55e;
+}
