@@ -1,9 +1,20 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App.jsx';
-import './styles/index.css';
+/**
+ * main.jsx (v2-fixed)
+ * Tambah UserProvider agar user state tersedia di seluruh app
+ */
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
+import App from './App'
+import { UserProvider } from './lib/utils/UserContext'
+import './styles/index.css'
 
 createRoot(document.getElementById('root')).render(
-  <React.StrictMode><BrowserRouter><App /></BrowserRouter></React.StrictMode>
-);
+  <StrictMode>
+    <BrowserRouter>
+      <UserProvider>
+        <App />
+      </UserProvider>
+    </BrowserRouter>
+  </StrictMode>,
+)

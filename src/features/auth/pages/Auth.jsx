@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Loader2, Wallet } from 'lucide-react'
 import { authRepository } from '../../../lib/repositories/authRepository'
@@ -46,6 +46,47 @@ export default function Auth() {
   )
 
   const googleReady = useGoogleScript(env.googleClientId)
+  // Ref untuk callback agar selalu pakai versi terbaru tanpa perlu re-init SDK
+  const googleCallbackRef = useRef(null)
+
+  const handleLoginRedirect = useCallback((user) => {
+    if (user.status === 'pending') {
+      navigate('/verify-otp', { state: { email: user.email } })
+      return
+    }
+    if (!user.onboarding_completed && !user.onboardingCompleted) {
+      navigate('/onboarding')
+      return
+    }
+    const redirectTo =
+      location.state?.from && location.state.from !== '/login'
+        ? location.state.from
+        : '/dashboard'
+    navigate(redirectTo)
+  }, [navigate, location.state])
+
+  /* ── Callback dari Google SDK setelah user pilih akun ── */
+  const handleGoogleCallback = useCallback(async (response) => {
+    if (!response?.credential) {
+      setError('Login Google dibatalkan atau gagal.')
+      return
+    }
+    try {
+      setGoogleLoading(true)
+      setError('')
+      const user = await authRepository.loginWithGoogle(response.credential)
+      handleLoginRedirect(user)
+    } catch (err) {
+      setError(err?.message || 'Login dengan Google gagal. Coba lagi.')
+    } finally {
+      setGoogleLoading(false)
+    }
+  }, [handleLoginRedirect])
+
+  // Selalu update ref agar Google SDK selalu panggil versi callback terbaru
+  useEffect(() => {
+    googleCallbackRef.current = handleGoogleCallback
+  }, [handleGoogleCallback])
 
   /* ── Render Google button ketika SDK siap dan bukan halaman register ── */
   useEffect(() => {
@@ -53,7 +94,8 @@ export default function Auth() {
 
     window.google.accounts.id.initialize({
       client_id: env.googleClientId,
-      callback: handleGoogleCallback,
+      // Pakai ref wrapper agar tidak perlu re-initialize setiap render
+      callback: (response) => googleCallbackRef.current?.(response),
       auto_select: false,
       cancel_on_tap_outside: true,
     })
@@ -70,7 +112,6 @@ export default function Auth() {
         width: '100%',
       },
     )
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [googleReady, isRegister])
 
   const handleChange = (e) => {
@@ -88,22 +129,6 @@ export default function Auth() {
     if (isRegister && !form.confirmPassword) return 'Konfirmasi password wajib diisi.'
     if (isRegister && form.password !== form.confirmPassword) return 'Password dan konfirmasi password tidak sama.'
     return ''
-  }
-
-  const handleLoginRedirect = (user) => {
-    if (user.status === 'pending') {
-      navigate('/verify-otp', { state: { email: user.email } })
-      return
-    }
-    if (!user.onboarding_completed && !user.onboardingCompleted) {
-      navigate('/onboarding')
-      return
-    }
-    const redirectTo =
-      location.state?.from && location.state.from !== '/login'
-        ? location.state.from
-        : '/dashboard'
-    navigate(redirectTo)
   }
 
   const handleSubmit = async (e) => {
@@ -134,24 +159,6 @@ export default function Auth() {
       setError(err?.message || 'Terjadi kesalahan. Silakan coba lagi.')
     } finally {
       setLoading(false)
-    }
-  }
-
-  /* ── Callback dari Google SDK setelah user pilih akun ── */
-  async function handleGoogleCallback(response) {
-    if (!response?.credential) {
-      setError('Login Google dibatalkan atau gagal.')
-      return
-    }
-    try {
-      setGoogleLoading(true)
-      setError('')
-      const user = await authRepository.loginWithGoogle(response.credential)
-      handleLoginRedirect(user)
-    } catch (err) {
-      setError(err?.message || 'Login dengan Google gagal. Coba lagi.')
-    } finally {
-      setGoogleLoading(false)
     }
   }
 

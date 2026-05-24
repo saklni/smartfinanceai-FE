@@ -1,43 +1,92 @@
-export const categoryOptions = [
-  { id: 1, name: 'Food', label: 'Makanan', type: 'expense', icon: 'utensils' },
-  { id: 2, name: 'Transport', label: 'Transportasi', type: 'expense', icon: 'car' },
-  { id: 3, name: 'Lifestyle', label: 'Gaya Hidup', type: 'expense', icon: 'coffee' },
-  { id: 4, name: 'Shopping', label: 'Belanja', type: 'expense', icon: 'shopping-bag' },
-  { id: 5, name: 'Education', label: 'Pendidikan', type: 'expense', icon: 'book-open' },
-  { id: 6, name: 'Subscription', label: 'Langganan', type: 'expense', icon: 'repeat' },
-  { id: 7, name: 'Health', label: 'Kesehatan', type: 'expense', icon: 'heart-pulse' },
-  { id: 8, name: 'Bills', label: 'Tagihan', type: 'expense', icon: 'receipt' },
-  { id: 9, name: 'Other', label: 'Lainnya', type: 'expense', icon: 'circle' },
-  { id: 10, name: 'Income', label: 'Pemasukan', type: 'income', icon: 'wallet' },
-]
+/**
+ * financeAdapters.js (v2-fixed)
+ *
+ * PERUBAHAN v2:
+ *  1. categoryOptions DIHAPUS — tidak lagi hardcoded dengan id/name statis.
+ *     Semua kategori sekarang diambil dari API (GET /categories) secara live.
+ *     Lihat: useLiveCategories() di categoryRepository.js
+ *
+ *  2. getCategoryIdByName() sekarang menerima array categories dari API sebagai param,
+ *     bukan mencari dari static array yang bisa beda dengan DB.
+ *
+ *  3. normalizeRecommendation() diperluas untuk handle format response AI:
+ *     { label, confidence, recommendation_summary, category_recommendations }
+ *
+ *  4. normalizeTransaction() menggunakan category_name/category_label dari backend
+ *     (bukan lookup ke static array lagi).
+ *
+ *  5. toApiTransactionPayload() tidak lagi pakai getCategoryIdByName(static),
+ *     cukup kirim category (name string), biarkan backend yang resolve.
+ */
 
-export const formatCategoryLabel = (value) => {
-  const category = categoryOptions.find(
-    (item) => item.name === value || item.label === value || Number(item.id) === Number(value),
+// ── Format currency ──────────────────────────────────────────────────────────
+export const formatIDR = (value) =>
+  new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    maximumFractionDigits: 0,
+  }).format(value || 0)
+
+// ── Category helpers (sekarang butuh array dari API) ─────────────────────────
+
+/**
+ * Cari category id berdasarkan nama, dari array live yang datang dari API.
+ * @param {string} name - nama kategori (Indonesia snake_case atau label)
+ * @param {Array}  apiCategories - array dari GET /categories
+ */
+export function getCategoryIdByName(name, apiCategories = []) {
+  if (!name) return null
+  const found = apiCategories.find(
+    (c) =>
+      c.name?.toLowerCase() === name?.toLowerCase() ||
+      c.label?.toLowerCase() === name?.toLowerCase(),
   )
-
-  return category?.label || value || 'Lainnya'
+  return found?.id || null
 }
 
-export function getCategoryIdByName(name) {
-  return categoryOptions.find((category) => category.name === name || category.label === name)?.id || null
+/**
+ * Format nama kategori ke label tampilan.
+ * Butuh array live dari API, dengan fallback formatting.
+ * @param {string} value - name atau label kategori
+ * @param {Array}  apiCategories - array dari GET /categories
+ */
+export function formatCategoryLabel(value, apiCategories = []) {
+  if (!value) return 'Lainnya'
+
+  // Cari di array live dulu
+  if (apiCategories.length > 0) {
+    const found = apiCategories.find(
+      (c) =>
+        c.name?.toLowerCase() === value?.toLowerCase() ||
+        c.label?.toLowerCase() === value?.toLowerCase(),
+    )
+    if (found) return found.label || found.name
+  }
+
+  // Fallback: format snake_case → Title Case
+  return value
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
+// ── normalizeCategory ─────────────────────────────────────────────────────────
 export function normalizeCategory(category = {}) {
-  const name = category.name || category.category || 'Other'
+  const name  = category.name  || 'lainnya'
   const label = category.label || formatCategoryLabel(name)
 
   return {
-    id: category.id || getCategoryIdByName(name),
-    user_id: category.user_id ?? null,
+    id:         category.id || null,
+    user_id:    category.user_id ?? null,
     name,
     label,
-    type: category.type || 'expense',
-    icon: category.icon || 'circle',
+    type:       category.type       || 'expense',
+    icon:       category.icon       || 'circle',
+    is_default: category.is_default ?? (category.user_id === null),
     created_at: category.created_at || null,
   }
 }
 
+// ── normalizeUser ─────────────────────────────────────────────────────────────
 export function normalizeUser(user = {}) {
   const profile = user.profile || user.user_profile || user.userProfile || {}
 
@@ -49,104 +98,87 @@ export function normalizeUser(user = {}) {
     return undefined
   }
 
-  const nickname = read('nickname', 'nick_name') || ''
-  const name = read('name', 'full_name') || nickname || 'Pengguna SmartFinance'
-  const email = read('email') || ''
-  const avatar =
+  const nickname      = read('nickname', 'nick_name') || ''
+  const name          = read('name', 'full_name') || nickname || 'Pengguna SmartFinance'
+  const email         = read('email') || ''
+  const avatar        =
     read('avatar') ||
-    name
-      .split(' ')
-      .filter(Boolean)
-      .map((part) => part[0])
-      .join('')
-      .slice(0, 2)
-      .toUpperCase() ||
+    name.split(' ').filter(Boolean).map((p) => p[0]).join('').slice(0, 2).toUpperCase() ||
     'SF'
 
-  const monthlyIncome = Number(read('monthlyIncome', 'monthly_income') ?? 0)
-  const savingTarget = Number(read('savingTarget', 'saving_target', 'target_saving') ?? 0)
-  const financialGoal = read('financialGoal', 'financial_goal') || ''
-  const riskProfile = read('riskProfile', 'risk_profile') || 'moderate'
-  const ageRange = read('ageRange', 'age_range') || ''
-  const spendingStyle = read('spendingStyle', 'spending_style') || ''
-  const mainPriority = read('mainPriority', 'main_priority') || ''
+  const monthlyIncome     = Number(read('monthlyIncome', 'monthly_income') ?? 0)
+  const savingTarget      = Number(read('savingTarget', 'saving_target', 'target_saving') ?? 0)
+  const financialGoal     = read('financialGoal', 'financial_goal') || ''
+  const riskProfile       = read('riskProfile', 'risk_profile') || 'moderate'
+  const ageRange          = read('ageRange', 'age_range') || ''
+  const spendingStyle     = read('spendingStyle', 'spending_style') || ''
+  const mainPriority      = read('mainPriority', 'main_priority') || ''
   const onboardingCompleted = Boolean(read('onboardingCompleted', 'onboarding_completed'))
-  const emailVerifiedAt = read('emailVerifiedAt', 'email_verified_at') || null
+  const emailVerifiedAt   = read('emailVerifiedAt', 'email_verified_at') || null
 
   return {
     ...user,
     ...profile,
-    id: read('id', 'user_id') || user.id,
+    id:                   read('id', 'user_id') || user.id,
     name,
     email,
     avatar,
     nickname,
-    monthlyIncome,
-    monthly_income: monthlyIncome,
-    savingTarget,
-    saving_target: savingTarget,
-    financialGoal,
-    financial_goal: financialGoal,
-    riskProfile,
-    risk_profile: riskProfile,
-    ageRange,
-    age_range: ageRange,
-    spendingStyle,
-    spending_style: spendingStyle,
-    mainPriority,
-    main_priority: mainPriority,
-    onboardingCompleted,
-    onboarding_completed: onboardingCompleted,
-    status: read('status') || 'active',
-    emailVerifiedAt,
-    email_verified_at: emailVerifiedAt,
+    monthlyIncome,        monthly_income:        monthlyIncome,
+    savingTarget,         saving_target:         savingTarget,
+    financialGoal,        financial_goal:        financialGoal,
+    riskProfile,          risk_profile:          riskProfile,
+    ageRange,             age_range:             ageRange,
+    spendingStyle,        spending_style:        spendingStyle,
+    mainPriority,         main_priority:         mainPriority,
+    onboardingCompleted,  onboarding_completed:  onboardingCompleted,
+    status:               read('status') || 'active',
+    emailVerifiedAt,      email_verified_at:     emailVerifiedAt,
   }
 }
 
+// ── toApiProfilePayload ───────────────────────────────────────────────────────
 export function toApiProfilePayload(user = {}) {
   const payload = {}
+  if (user.name          !== undefined) payload.name          = user.name
+  if (user.email         !== undefined) payload.email         = user.email
+  if (user.nickname      !== undefined) payload.nickname      = user.nickname
 
-  if (user.name !== undefined) payload.name = user.name
-  if (user.email !== undefined) payload.email = user.email
-  if (user.nickname !== undefined) payload.nickname = user.nickname
+  const income = user.monthlyIncome ?? user.monthly_income
+  if (income !== undefined) payload.monthly_income = Number(income)
 
-  if (user.monthlyIncome !== undefined || user.monthly_income !== undefined) {
-    payload.monthly_income = Number(user.monthlyIncome ?? user.monthly_income)
-  }
+  const saving = user.savingTarget ?? user.saving_target ?? user.target_saving
+  if (saving !== undefined) payload.saving_target = Number(saving)
 
-  if (user.savingTarget !== undefined || user.saving_target !== undefined || user.target_saving !== undefined) {
-    payload.saving_target = Number(user.savingTarget ?? user.saving_target ?? user.target_saving)
-  }
+  const goal = user.financialGoal ?? user.financial_goal
+  if (goal !== undefined) payload.financial_goal = goal
 
-  if (user.financialGoal !== undefined || user.financial_goal !== undefined) {
-    payload.financial_goal = user.financialGoal ?? user.financial_goal
-  }
+  const risk = user.riskProfile ?? user.risk_profile
+  if (risk !== undefined) payload.risk_profile = risk
 
-  if (user.riskProfile !== undefined || user.risk_profile !== undefined) {
-    payload.risk_profile = user.riskProfile ?? user.risk_profile
-  }
+  const age = user.ageRange ?? user.age_range
+  if (age !== undefined) payload.age_range = age
 
-  if (user.ageRange !== undefined || user.age_range !== undefined) {
-    payload.age_range = user.ageRange ?? user.age_range
-  }
+  const style = user.spendingStyle ?? user.spending_style
+  if (style !== undefined) payload.spending_style = style
 
-  if (user.spendingStyle !== undefined || user.spending_style !== undefined) {
-    payload.spending_style = user.spendingStyle ?? user.spending_style
-  }
+  const priority = user.mainPriority ?? user.main_priority
+  if (priority !== undefined) payload.main_priority = priority
 
-  if (user.mainPriority !== undefined || user.main_priority !== undefined) {
-    payload.main_priority = user.mainPriority ?? user.main_priority
-  }
-
-  if (user.onboardingCompleted !== undefined || user.onboarding_completed !== undefined) {
-    payload.onboarding_completed = Boolean(user.onboardingCompleted ?? user.onboarding_completed)
-  }
+  const onboarded = user.onboardingCompleted ?? user.onboarding_completed
+  if (onboarded !== undefined) payload.onboarding_completed = Boolean(onboarded)
 
   return payload
 }
 
-export function normalizeTransaction(transaction = {}) {
-  const categoryName = transaction.category?.name || transaction.category || transaction.category_name || 'Other'
+// ── normalizeTransaction ──────────────────────────────────────────────────────
+export function normalizeTransaction(transaction = {}, apiCategories = []) {
+  // Prioritas: category_name dari JOIN backend, lalu category string, lalu fallback
+  const categoryName  = transaction.category_name || transaction.category || 'lainnya'
+  // Untuk label tampilan: pakai category_label dari backend jika ada
+  const categoryLabel = transaction.category_label ||
+    formatCategoryLabel(categoryName, apiCategories)
+
   const transactionDate =
     transaction.transaction_date ||
     transaction.date ||
@@ -154,45 +186,77 @@ export function normalizeTransaction(transaction = {}) {
     new Date().toISOString().slice(0, 10)
 
   return {
-    id: transaction.id,
-    user_id: transaction.user_id,
-    category_id: transaction.category_id || getCategoryIdByName(categoryName),
-    title: transaction.title || transaction.name || 'Transaksi',
-    type: transaction.type || 'expense',
-    category: categoryName,
-    categoryLabel: formatCategoryLabel(categoryName),
-    amount: Number(transaction.amount || 0),
-    date: transactionDate,
+    id:               transaction.id,
+    user_id:          transaction.user_id,
+    category_id:      transaction.category_id || null,
+    category:         categoryName,
+    category_name:    categoryName,
+    categoryLabel,
+    category_label:   categoryLabel,
+    title:            transaction.title || 'Transaksi',
+    description:      transaction.description || transaction.title || '',
+    type:             transaction.type || 'expense',
+    amount:           Number(transaction.amount || 0),
+    date:             transactionDate,
     transaction_date: transactionDate,
-    note: transaction.note || '',
-    created_at: transaction.created_at || null,
-    updated_at: transaction.updated_at || null,
+    note:             transaction.note || '',
+    created_at:       transaction.created_at || null,
+    updated_at:       transaction.updated_at || null,
   }
 }
 
+/**
+ * Payload ke API — kirim category sebagai name string,
+ * biarkan backend yang resolve ke category_id lewat resolveCategoryId().
+ */
 export function toApiTransactionPayload(form = {}) {
-  const category = form.category || 'Other'
-  return {
-    title: form.title?.trim(),
-    type: form.type,
-    category_id: form.category_id || getCategoryIdByName(category),
-    category,
-    amount: Number(form.amount || 0),
-    transaction_date: form.transaction_date || form.date,
-    note: form.note?.trim() || '',
+  const payload = {
+    title:            form.title?.trim() || '',
+    description:      form.description?.trim() || form.title?.trim() || '',
+    type:             form.type,
+    category:         form.category || 'lainnya',
+    amount:           Number(form.amount || 0),
+    transaction_date: form.transaction_date || form.date || new Date().toISOString().slice(0, 10),
+    note:             form.note?.trim() || '',
   }
+
+  // Hanya kirim category_id jika valid integer > 0
+  // Jika null/undefined/0, biarkan backend resolve lewat nama category saja
+  const catId = Number(form.category_id)
+  if (catId && catId > 0) {
+    payload.category_id = catId
+  }
+
+  return payload
 }
 
+// ── normalizeRecommendation ──────────────────────────────────────────────────
+/**
+ * Handle dua format response dari backend:
+ *
+ * Format AI (source: 'llm'):
+ *   { id, recommendation_type:'ai_classification'|'ai_summary'|'ai_category',
+ *     title, text, priority, source:'llm', label, confidence, savings_pct, category? }
+ *
+ * Format rule-based fallback (source: 'rule_based'):
+ *   { id, recommendation_type, title, text, priority, source:'rule_based' }
+ */
 export function normalizeRecommendation(item = {}) {
   return {
-    id: item.id || item.title,
+    id:                  item.id || item.title || Math.random().toString(36).slice(2),
     recommendation_type: item.recommendation_type || item.type || 'general',
-    title: item.title || 'Rekomendasi Finansial',
-    text: item.text || item.message || item.description || '',
-    message: item.message || item.text || item.description || '',
-    priority: item.priority || 'medium',
-    source: item.source || 'rule_based',
-    action: item.action || '',
-    expires_at: item.expires_at || null,
+    title:               item.title || 'Rekomendasi Finansial',
+    text:                item.text  || item.message || item.description || '',
+    message:             item.message || item.text || '',
+    priority:            item.priority || 'medium',
+    source:              item.source   || 'rule_based',
+    action:              item.action   || '',
+    expires_at:          item.expires_at || null,
+    // Field tambahan dari AI
+    label:               item.label      || null,   // 'Boros' | 'Normal' | 'Hemat'
+    confidence:          item.confidence || null,   // 0.0 – 1.0
+    savings_pct:         item.savings_pct || null,
+    category:            item.category   || null,   // untuk tipe ai_category
+    financial_health:    item.financial_health || null,
   }
 }

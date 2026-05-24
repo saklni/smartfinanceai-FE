@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { authRepository } from '../../../lib/repositories/authRepository'
-import { formatIDR } from '../../../lib/repositories/financeRepository'
+import { formatIDR } from '../../../lib/utils/financeAdapters'
 
 const ageOptions = [
   ['<18', 'Di bawah 18 tahun'],

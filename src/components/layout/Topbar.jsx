@@ -1,26 +1,9 @@
-import { useEffect, useState } from 'react'
 import { Bell, Search } from 'lucide-react'
 import ThemeToggle from '../common/ThemeToggle'
-import { authRepository } from '../../lib/repositories/authRepository'
+import { useUser } from '../../lib/utils/UserContext'
 
 export default function Topbar({ theme, onToggleTheme }) {
-  const [user, setUser] = useState(null)
-
-  useEffect(() => {
-    let mounted = true
-
-    authRepository.getProfile()
-      .then((profile) => {
-        if (mounted) setUser(profile)
-      })
-      .catch(() => {
-        if (mounted) setUser(null)
-      })
-
-    return () => {
-      mounted = false
-    }
-  }, [])
+  const { user } = useUser()
 
   return (
     <header className="topbar">

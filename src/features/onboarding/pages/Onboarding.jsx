@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CheckCircle2, PiggyBank, Target, UserRound, Wallet } from 'lucide-react'
 import { authRepository } from '../../../lib/repositories/authRepository'
+import { useUser } from '../../../lib/utils/UserContext' 
 
 const ageRanges = [
   { label: 'Di bawah 18 tahun', value: '<18' },
@@ -56,6 +57,7 @@ function buildInitialForm(profile = {}) {
 
 export default function Onboarding() {
   const navigate = useNavigate()
+  const { setUser } = useUser() 
   const [step, setStep] = useState(1)
   const [form, setForm] = useState(initialForm)
   const [error, setError] = useState('')
@@ -154,6 +156,8 @@ export default function Onboarding() {
         onboarding_completed: true,
         onboardingCompleted: true,
       })
+
+      setUser((prev) => ({ ...prev, onboarding_completed: true, onboardingCompleted: true }))
 
       navigate('/dashboard', { replace: true })
     } catch (err) {
