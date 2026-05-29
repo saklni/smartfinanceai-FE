@@ -1,14 +1,3 @@
-/**
- * ProtectedRoute.jsx (v2-fixed)
- *
- * PERUBAHAN v2:
- *   - Tidak lagi memanggil getProfile() setiap route change (location.pathname).
- *     Sebelumnya: dependency [location.pathname] → GET /auth/me di setiap navigasi.
- *     Sekarang: validasi sekali saat mount, lalu pakai UserContext.
- *   - Pakai UserContext untuk share user state ke seluruh app (tidak double-fetch).
- *   - Session expired event tetap dihandle.
- */
-
 import { useEffect, useRef, useState } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { authRepository } from '../../lib/repositories/authRepository'
@@ -19,12 +8,12 @@ const PUBLIC_AUTH_PATHS = ['/login', '/register', '/verify-otp']
 export default function ProtectedRoute() {
   const location = useLocation()
   const { user, setUser } = useUser()
-  const [checking, setChecking] = useState(!user) // skip check jika sudah ada user
+  const [checking, setChecking] = useState(!user) 
   const [authError, setAuthError] = useState('')
-  const validatedRef = useRef(false) // flag agar tidak re-validate setelah berhasil
+  const validatedRef = useRef(false) 
 
   useEffect(() => {
-    // Jika sudah tervalidasi sebelumnya (navigasi antar halaman), skip GET /auth/me
+    
     if (validatedRef.current) return
 
     let mounted = true
@@ -70,8 +59,8 @@ export default function ProtectedRoute() {
       mounted = false
       window.removeEventListener('smartfinance:session-expired', handleSessionExpired)
     }
-  // Hanya jalankan saat mount — bukan saat setiap navigasi
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
+  
   }, [])
 
   if (checking) {

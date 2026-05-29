@@ -7,7 +7,6 @@ import { env } from '../../../config/env'
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/
 
-/* ─── Google One-Tap / Sign-In button loader ─────────────────────────────── */
 function useGoogleScript(clientId) {
   const [ready, setReady] = useState(false)
 
@@ -23,7 +22,7 @@ function useGoogleScript(clientId) {
     document.head.appendChild(script)
 
     return () => {
-      // cleanup jika komponen unmount sebelum script load
+      
     }
   }, [clientId])
 
@@ -46,7 +45,7 @@ export default function Auth() {
   )
 
   const googleReady = useGoogleScript(env.googleClientId)
-  // Ref untuk callback agar selalu pakai versi terbaru tanpa perlu re-init SDK
+  
   const googleCallbackRef = useRef(null)
 
   const handleLoginRedirect = useCallback((user) => {
@@ -65,7 +64,7 @@ export default function Auth() {
     navigate(redirectTo)
   }, [navigate, location.state])
 
-  /* ── Callback dari Google SDK setelah user pilih akun ── */
+  
   const handleGoogleCallback = useCallback(async (response) => {
     if (!response?.credential) {
       setError('Login Google dibatalkan atau gagal.')
@@ -83,18 +82,18 @@ export default function Auth() {
     }
   }, [handleLoginRedirect])
 
-  // Selalu update ref agar Google SDK selalu panggil versi callback terbaru
+  
   useEffect(() => {
     googleCallbackRef.current = handleGoogleCallback
   }, [handleGoogleCallback])
 
-  /* ── Render Google button ketika SDK siap dan bukan halaman register ── */
+  
   useEffect(() => {
     if (!googleReady || !env.googleClientId || isRegister) return
 
     window.google.accounts.id.initialize({
       client_id: env.googleClientId,
-      // Pakai ref wrapper agar tidak perlu re-initialize setiap render
+      
       callback: (response) => googleCallbackRef.current?.(response),
       auto_select: false,
       cancel_on_tap_outside: true,
@@ -162,7 +161,7 @@ export default function Auth() {
     }
   }
 
-  /* ── Fallback manual trigger One-Tap (jika renderButton tidak muncul) ── */
+  
   const handleGoogleButtonClick = () => {
     if (!env.googleClientId) {
       setError('Google Client ID belum dikonfigurasi. Tambahkan VITE_GOOGLE_CLIENT_ID di .env')
@@ -197,7 +196,7 @@ export default function Auth() {
         )}
         {error && <div className="form-alert error">{error}</div>}
 
-        {/* ── Google Sign-In (login only) ── */}
+        {}
         {!isRegister && (
           <>
             {env.googleClientId ? (
@@ -208,10 +207,10 @@ export default function Auth() {
                     <span>Menghubungkan dengan Google...</span>
                   </div>
                 )}
-                {/* Google renderButton target */}
+                {}
                 <div id="google-signin-btn" className={googleLoading ? 'hidden' : ''} />
 
-                {/* Fallback: jika SDK belum load atau tidak ada client ID */}
+                {}
                 {!googleReady && !googleLoading && (
                   <button
                     type="button"
@@ -225,7 +224,7 @@ export default function Auth() {
                 )}
               </div>
             ) : (
-              /* Tampilkan tombol disabled dengan tooltip jika VITE_GOOGLE_CLIENT_ID belum diisi */
+              
               <div className="google-signin-wrapper">
                 <button
                   type="button"
@@ -341,7 +340,6 @@ export default function Auth() {
   )
 }
 
-/* ── Google SVG Icon ─────────────────────────────────────────────────────── */
 function GoogleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">

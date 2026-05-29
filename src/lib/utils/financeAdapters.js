@@ -1,25 +1,3 @@
-/**
- * financeAdapters.js (v2-fixed)
- *
- * PERUBAHAN v2:
- *  1. categoryOptions DIHAPUS — tidak lagi hardcoded dengan id/name statis.
- *     Semua kategori sekarang diambil dari API (GET /categories) secara live.
- *     Lihat: useLiveCategories() di categoryRepository.js
- *
- *  2. getCategoryIdByName() sekarang menerima array categories dari API sebagai param,
- *     bukan mencari dari static array yang bisa beda dengan DB.
- *
- *  3. normalizeRecommendation() diperluas untuk handle format response AI:
- *     { label, confidence, recommendation_summary, category_recommendations }
- *
- *  4. normalizeTransaction() menggunakan category_name/category_label dari backend
- *     (bukan lookup ke static array lagi).
- *
- *  5. toApiTransactionPayload() tidak lagi pakai getCategoryIdByName(static),
- *     cukup kirim category (name string), biarkan backend yang resolve.
- */
-
-// ── Format currency ──────────────────────────────────────────────────────────
 export const formatIDR = (value) =>
   new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -27,13 +5,6 @@ export const formatIDR = (value) =>
     maximumFractionDigits: 0,
   }).format(value || 0)
 
-// ── Category helpers (sekarang butuh array dari API) ─────────────────────────
-
-/**
- * Cari category id berdasarkan nama, dari array live yang datang dari API.
- * @param {string} name - nama kategori (Indonesia snake_case atau label)
- * @param {Array}  apiCategories - array dari GET /categories
- */
 export function getCategoryIdByName(name, apiCategories = []) {
   if (!name) return null
   const found = apiCategories.find(
@@ -44,16 +15,10 @@ export function getCategoryIdByName(name, apiCategories = []) {
   return found?.id || null
 }
 
-/**
- * Format nama kategori ke label tampilan.
- * Butuh array live dari API, dengan fallback formatting.
- * @param {string} value - name atau label kategori
- * @param {Array}  apiCategories - array dari GET /categories
- */
 export function formatCategoryLabel(value, apiCategories = []) {
   if (!value) return 'Lainnya'
 
-  // Cari di array live dulu
+  
   if (apiCategories.length > 0) {
     const found = apiCategories.find(
       (c) =>
@@ -63,13 +28,12 @@ export function formatCategoryLabel(value, apiCategories = []) {
     if (found) return found.label || found.name
   }
 
-  // Fallback: format snake_case → Title Case
+  
   return value
     .replace(/_/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
-// ── normalizeCategory ─────────────────────────────────────────────────────────
 export function normalizeCategory(category = {}) {
   const name  = category.name  || 'lainnya'
   const label = category.label || formatCategoryLabel(name)
@@ -86,7 +50,6 @@ export function normalizeCategory(category = {}) {
   }
 }
 
-// ── normalizeUser ─────────────────────────────────────────────────────────────
 export function normalizeUser(user = {}) {
   const profile = user.profile || user.user_profile || user.userProfile || {}
 
@@ -137,7 +100,6 @@ export function normalizeUser(user = {}) {
   }
 }
 
-// ── toApiProfilePayload ───────────────────────────────────────────────────────
 export function toApiProfilePayload(user = {}) {
   const payload = {}
   if (user.name          !== undefined) payload.name          = user.name
@@ -171,11 +133,10 @@ export function toApiProfilePayload(user = {}) {
   return payload
 }
 
-// ── normalizeTransaction ──────────────────────────────────────────────────────
 export function normalizeTransaction(transaction = {}, apiCategories = []) {
-  // Prioritas: category_name dari JOIN backend, lalu category string, lalu fallback
+  
   const categoryName  = transaction.category_name || transaction.category || 'lainnya'
-  // Untuk label tampilan: pakai category_label dari backend jika ada
+  
   const categoryLabel = transaction.category_label ||
     formatCategoryLabel(categoryName, apiCategories)
 
@@ -205,10 +166,6 @@ export function normalizeTransaction(transaction = {}, apiCategories = []) {
   }
 }
 
-/**
- * Payload ke API — kirim category sebagai name string,
- * biarkan backend yang resolve ke category_id lewat resolveCategoryId().
- */
 export function toApiTransactionPayload(form = {}) {
   const payload = {
     title:            form.title?.trim() || '',
@@ -220,8 +177,8 @@ export function toApiTransactionPayload(form = {}) {
     note:             form.note?.trim() || '',
   }
 
-  // Hanya kirim category_id jika valid integer > 0
-  // Jika null/undefined/0, biarkan backend resolve lewat nama category saja
+  
+  
   const catId = Number(form.category_id)
   if (catId && catId > 0) {
     payload.category_id = catId
@@ -230,17 +187,6 @@ export function toApiTransactionPayload(form = {}) {
   return payload
 }
 
-// ── normalizeRecommendation ──────────────────────────────────────────────────
-/**
- * Handle dua format response dari backend:
- *
- * Format AI (source: 'llm'):
- *   { id, recommendation_type:'ai_classification'|'ai_summary'|'ai_category',
- *     title, text, priority, source:'llm', label, confidence, savings_pct, category? }
- *
- * Format rule-based fallback (source: 'rule_based'):
- *   { id, recommendation_type, title, text, priority, source:'rule_based' }
- */
 export function normalizeRecommendation(item = {}) {
   return {
     id:                  item.id || item.title || Math.random().toString(36).slice(2),
@@ -252,11 +198,11 @@ export function normalizeRecommendation(item = {}) {
     source:              item.source   || 'rule_based',
     action:              item.action   || '',
     expires_at:          item.expires_at || null,
-    // Field tambahan dari AI
-    label:               item.label      || null,   // 'Boros' | 'Normal' | 'Hemat'
-    confidence:          item.confidence || null,   // 0.0 – 1.0
+    
+    label:               item.label      || null,   
+    confidence:          item.confidence || null,   
     savings_pct:         item.savings_pct || null,
-    category:            item.category   || null,   // untuk tipe ai_category
+    category:            item.category   || null,   
     financial_health:    item.financial_health || null,
   }
 }

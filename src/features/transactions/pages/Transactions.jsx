@@ -1,14 +1,3 @@
-/**
- * Transactions.jsx (v2-fixed)
- *
- * PERUBAHAN v2:
- *   1. Default form.category tidak lagi hardcoded 'Food' — diambil dari kategori
- *      pertama yang datang dari API (live categories)
- *   2. Pakai useLiveCategories() dari categoryRepository — bukan static array
- *   3. formatCategoryLabel() sekarang terima apiCategories sebagai param kedua
- *   4. Kirim category_label ke display, category (name) ke API
- */
-
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Edit3, Plus, Save, Search, Trash2, X } from 'lucide-react'
 import { financeRepository } from '../../../lib/repositories/financeRepository'
@@ -50,7 +39,7 @@ export default function Transactions() {
   const [filterType,  setFilterType]  = useState('all')
   const initRef = useRef(false)
 
-  // Setelah kategori load dari API, isi default form.category
+  
   useEffect(() => {
     if (!catLoading && expenseCategories.length > 0 && !initRef.current) {
       initRef.current = true
@@ -283,7 +272,7 @@ export default function Transactions() {
               <div>
                 <b>{item.title}</b>
                 <p>
-                  {/* Tampilkan label (bahasa display), bukan name (snake_case) */}
+                  {}
                   {item.category_label || formatCategoryLabel(item.category, categories)}
                   {' '}•{' '}
                   {item.transaction_date || item.date}

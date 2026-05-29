@@ -8,13 +8,6 @@ const RESEND_COOLDOWN = 45
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   3-step forgot password flow:
-   step 1 → input email → request OTP
-   step 2 → input OTP   → verify, dapat reset_token
-   step 3 → input password baru → reset, redirect ke /login
-───────────────────────────────────────────────────────────────────────────── */
-
 export default function ForgotPassword() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
@@ -34,14 +27,14 @@ export default function ForgotPassword() {
 
   const otpLength = env.otpLength || 6
 
-  // Cooldown timer untuk resend OTP
+  
   useEffect(() => {
     if (!cooldown) return undefined
     const t = setInterval(() => setCooldown((c) => Math.max(c - 1, 0)), 1000)
     return () => clearInterval(t)
   }, [cooldown])
 
-  // ── Step 1: Request OTP ────────────────────────────────────────────────────
+  
   async function handleRequestOtp(e) {
     e.preventDefault()
     setError('')
@@ -65,7 +58,7 @@ export default function ForgotPassword() {
     }
   }
 
-  // ── Resend OTP ─────────────────────────────────────────────────────────────
+  
   async function handleResendOtp() {
     setError('')
     setInfo('')
@@ -78,7 +71,7 @@ export default function ForgotPassword() {
     }
   }
 
-  // ── Step 2: Verify OTP ─────────────────────────────────────────────────────
+  
   async function handleVerifyOtp(e) {
     e.preventDefault()
     setError('')
@@ -105,7 +98,7 @@ export default function ForgotPassword() {
     }
   }
 
-  // ── Step 3: Reset Password ─────────────────────────────────────────────────
+  
   async function handleResetPassword(e) {
     e.preventDefault()
     setError('')
@@ -147,7 +140,7 @@ export default function ForgotPassword() {
           <span>SmartFinance AI</span>
         </Link>
 
-        {/* Step indicator */}
+        {}
         <div className="fp-steps">
           {[1, 2, 3].map((s) => (
             <div key={s} className={`fp-step ${step === s ? 'active' : ''} ${step > s ? 'done' : ''}`}>
@@ -167,7 +160,7 @@ export default function ForgotPassword() {
         {error && <div className="form-alert error">{error}</div>}
         {info && <div className="form-alert success">{info}</div>}
 
-        {/* ── Step 1 ── */}
+        {}
         {step === 1 && (
           <form className="auth-form" onSubmit={handleRequestOtp}>
             <label className="form-group">
@@ -188,7 +181,7 @@ export default function ForgotPassword() {
           </form>
         )}
 
-        {/* ── Step 2 ── */}
+        {}
         {step === 2 && (
           <form className="auth-form" onSubmit={handleVerifyOtp}>
             <label className="form-group">
@@ -224,7 +217,7 @@ export default function ForgotPassword() {
           </form>
         )}
 
-        {/* ── Step 3 ── */}
+        {}
         {step === 3 && (
           <form className="auth-form" onSubmit={handleResetPassword}>
             <label className="form-group">

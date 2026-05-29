@@ -1,13 +1,3 @@
-/**
- * recommendationApi.js (v2-fixed)
- *
- * PERUBAHAN v2:
- *   - Tidak lagi melakukan .map(normalizeRecommendation) di sini langsung.
- *     Response dari backend v2 sudah berupa array yang siap di-normalize.
- *   - Guard: jika response bukan array (misal null/object), kembalikan [].
- *   - normalizeRecommendation sekarang handle format AI dan rule-based.
- */
-
 import { axiosClient } from './axiosClient'
 import { unwrapApiResponse } from '../utils/apiResponse'
 import { normalizeRecommendation } from '../utils/financeAdapters'

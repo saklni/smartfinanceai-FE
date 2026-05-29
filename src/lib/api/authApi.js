@@ -27,8 +27,6 @@ export async function resendOtp(payload) {
   return unwrapApiResponse(response)
 }
 
-// ─── Forgot Password ──────────────────────────────────────────────────────────
-
 export async function forgotPassword(payload) {
   const response = await axiosClient.post('/auth/forgot-password', payload)
   return unwrapApiResponse(response)
@@ -43,8 +41,6 @@ export async function resetPassword(payload) {
   const response = await axiosClient.post('/auth/reset-password', payload)
   return unwrapApiResponse(response)
 }
-
-// ─── Profile ──────────────────────────────────────────────────────────────────
 
 export async function getProfile() {
   const response = await axiosClient.get('/auth/me')

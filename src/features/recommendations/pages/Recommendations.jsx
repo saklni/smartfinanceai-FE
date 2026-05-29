@@ -2,7 +2,6 @@ import { Brain, Sparkles, TrendingDown, TrendingUp, Target,
          AlertCircle, RefreshCw, ChevronRight, Lightbulb } from 'lucide-react'
 import { useRecommendations } from '../../../lib/repositories/recommendationRepository'
 
-/* ── Konfigurasi label ─────────────────────────────────────────────────── */
 const LABEL_CONFIG = {
   Boros:  { emoji: '⚠️', color: 'boros',  icon: TrendingDown, title: 'Perlu Perhatian',  desc: 'Pengeluaran melebihi batas aman' },
   Normal: { emoji: '👍', color: 'normal', icon: Target,       title: 'Cukup Baik',       desc: 'Keuangan berjalan cukup sehat' },
@@ -26,7 +25,6 @@ const CATEGORY_ICON = {
   tabungan_investasi: '💰',
 }
 
-/* ── Hero: status bar keuangan ──────────────────────────────────────────── */
 function AiStatusHero({ label, confidence, savingsPct, hasAi }) {
   const cfg = LABEL_CONFIG[label]
 
@@ -48,7 +46,7 @@ function AiStatusHero({ label, confidence, savingsPct, hasAi }) {
   const Icon = cfg.icon
   return (
     <div className={`rec-hero rec-hero-ai rec-hero-${cfg.color}`}>
-      {/* Kiri: status utama */}
+      {}
       <div className="rec-hero-main">
         <div className={`rec-hero-icon-wrap ${cfg.color}`}>
           <Icon size={28} />
@@ -62,7 +60,7 @@ function AiStatusHero({ label, confidence, savingsPct, hasAi }) {
         </div>
       </div>
 
-      {/* Kanan: dua metrik */}
+      {}
       <div className="rec-hero-metrics">
         <div className="rec-metric">
           <span className="rec-metric-num">{Math.round((confidence ?? 0) * 100)}%</span>
@@ -77,7 +75,7 @@ function AiStatusHero({ label, confidence, savingsPct, hasAi }) {
         </div>
       </div>
 
-      {/* Progress bar saving rate */}
+      {}
       {savingsPct !== null && savingsPct !== undefined && (
         <div className="rec-hero-progress">
           <div className="rec-hero-progress-labels">
@@ -89,7 +87,7 @@ function AiStatusHero({ label, confidence, savingsPct, hasAi }) {
               className={`rec-hero-fill ${savingsPct >= 20 ? 'good' : savingsPct >= 10 ? 'ok' : 'low'}`}
               style={{ width: `${Math.min(100, Math.max(0, savingsPct))}%` }}
             />
-            {/* Marker target 20% */}
+            {}
             <div className="rec-hero-bar-marker" style={{ left: '20%' }} />
           </div>
         </div>
@@ -98,7 +96,6 @@ function AiStatusHero({ label, confidence, savingsPct, hasAi }) {
   )
 }
 
-/* ── Card: ringkasan AI ──────────────────────────────────────────────────── */
 function SummaryCard({ item }) {
   return (
     <div className="rec-card rec-card-full rec-card-summary">
@@ -111,7 +108,6 @@ function SummaryCard({ item }) {
   )
 }
 
-/* ── Card: per-kategori AI ───────────────────────────────────────────────── */
 function CategoryCard({ item }) {
   const catKey   = item.category || ''
   const emoji    = CATEGORY_ICON[catKey] || '📌'
@@ -133,7 +129,6 @@ function CategoryCard({ item }) {
   )
 }
 
-/* ── Card: rule-based fallback ───────────────────────────────────────────── */
 function RuleCard({ item, index }) {
   const icons = [TrendingDown, Target, Lightbulb, Brain]
   const Icon  = icons[index % icons.length]
@@ -154,7 +149,6 @@ function RuleCard({ item, index }) {
   )
 }
 
-/* ── Loading skeleton ────────────────────────────────────────────────────── */
 function RecSkeleton() {
   return (
     <div className="rec-skeleton-wrap">
@@ -166,7 +160,6 @@ function RecSkeleton() {
   )
 }
 
-/* ── Main page ───────────────────────────────────────────────────────────── */
 export default function Recommendations() {
   const { recommendations, aiLabel, loading, error, reload } = useRecommendations()
 
@@ -180,7 +173,7 @@ export default function Recommendations() {
   return (
     <section className="page">
 
-      {/* Page title */}
+      {}
       <div className="page-title">
         <div>
           <p>Asisten keuangan personal</p>
@@ -192,7 +185,7 @@ export default function Recommendations() {
         </button>
       </div>
 
-      {/* Error */}
+      {}
       {error && (
         <div className="rec-error-banner">
           <AlertCircle size={16} />
@@ -200,13 +193,13 @@ export default function Recommendations() {
         </div>
       )}
 
-      {/* Loading */}
+      {}
       {loading && <RecSkeleton />}
 
-      {/* Content */}
+      {}
       {!loading && (
         <>
-          {/* Hero status */}
+          {}
           <AiStatusHero
             label={aiLabel}
             confidence={labelCard?.confidence}
@@ -214,7 +207,7 @@ export default function Recommendations() {
             hasAi={hasAi}
           />
 
-          {/* Empty state */}
+          {}
           {!hasContent && !error && (
             <div className="rec-empty">
               <Sparkles size={36} />
@@ -223,10 +216,10 @@ export default function Recommendations() {
             </div>
           )}
 
-          {/* Summary card — full width */}
+          {}
           {summaryCard && <SummaryCard item={summaryCard} />}
 
-          {/* Category cards dari AI */}
+          {}
           {catCards.length > 0 && (
             <div className="rec-section">
               <div className="rec-section-title">
@@ -242,7 +235,7 @@ export default function Recommendations() {
             </div>
           )}
 
-          {/* Rule-based cards */}
+          {}
           {ruleCards.length > 0 && (
             <div className="rec-section">
               <div className="rec-section-title">

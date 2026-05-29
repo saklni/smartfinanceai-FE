@@ -1,16 +1,3 @@
-/**
- * UserContext.jsx (BARU v2)
- *
- * Global state untuk data user yang sudah login.
- * Menyelesaikan masalah:
- *   - GET /auth/me dipanggil berulang di setiap halaman secara independen
- *   - Update profil di Profile tidak otomatis terlihat di halaman lain
- *
- * Cara pakai:
- *   // Wrap App di main.jsx sudah dilakukan
- *   const { user, setUser, refreshUser } = useUser()
- */
-
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import { authRepository } from '../repositories/authRepository'
 

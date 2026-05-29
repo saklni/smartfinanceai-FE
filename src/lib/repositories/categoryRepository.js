@@ -1,16 +1,6 @@
-/**
- * categoryRepository.js (v2-fixed)
- *
- * PERUBAHAN v2:
- *   - Tambah useLiveCategories() hook — sumber kebenaran tunggal untuk kategori
- *   - Komponen tidak perlu lagi lookup ke static categoryOptions
- *   - Cache di-share via module-level variable (ringan, cukup untuk 1 sesi)
- */
-
 import { useCallback, useEffect, useRef, useState } from 'react'
 import * as categoryApi from '../api/categoryApi'
 
-// Module-level cache agar tidak re-fetch setiap mount komponen
 let _categoriesCache = null
 let _fetchPromise    = null
 
@@ -18,7 +8,7 @@ export const categoryRepository = {
   async getCategories() {
     if (_categoriesCache) return _categoriesCache
 
-    // Deduplicate concurrent calls
+    
     if (!_fetchPromise) {
       _fetchPromise = categoryApi.getCategories().then((data) => {
         _categoriesCache = data
@@ -35,24 +25,18 @@ export const categoryRepository = {
 
   async createCategory(payload) {
     const created = await categoryApi.createCategory(payload)
-    // Invalidate cache saat ada kategori baru
+    
     _categoriesCache = null
     return created
   },
 
-  /** Hapus cache paksa (berguna setelah migrasi kategori) */
+  
   clearCache() {
     _categoriesCache = null
     _fetchPromise    = null
   },
 }
 
-/**
- * Hook untuk menggunakan kategori live dari API.
- * Menggantikan import static categoryOptions dari financeAdapters.
- *
- * @returns {{ categories, expenseCategories, incomeCategories, loading, error }}
- */
 export function useLiveCategories() {
   const [categories,       setCategories]       = useState([])
   const [loading,          setLoading]          = useState(true)

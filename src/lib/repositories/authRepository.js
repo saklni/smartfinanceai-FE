@@ -1,24 +1,9 @@
-/**
- * authRepository.js (v2-fixed)
- *
- * PERUBAHAN v2:
- *   - persistToken() diperbaiki: setelah unwrapApiResponse(), token ada di result.token
- *     (bukan result.data.token lagi karena sudah di-unwrap satu level)
- *   - Semua hasil sudah di-unwrap sebelum masuk ke sini (dari authApi)
- *   - Tambah getStoredUser() untuk baca user dari localStorage
- */
-
 import * as authApi from '../api/authApi'
 import { STORAGE_KEYS } from '../utils/storageKeys'
 import { normalizeUser } from '../utils/financeAdapters'
 
-/**
- * Simpan token ke localStorage.
- * authApi sudah memanggil unwrapApiResponse(), jadi `result` sudah berupa payload .data
- * → token ada di result.token (bukan result.data.token)
- */
 function persistToken(result) {
-  // Setelah unwrapApiResponse: result = { token, user, ... }
+  
   const token = result?.token || result?.accessToken
 
   if (token) {
@@ -28,7 +13,7 @@ function persistToken(result) {
 }
 
 function extractUser(result) {
-  // result sudah di-unwrap: { token, user: {...} }
+  
   return normalizeUser(result?.user || result)
 }
 
@@ -69,7 +54,7 @@ export const authRepository = {
   },
 
   async getProfile() {
-    // authApi.getProfile() sudah normalizeUser() di dalamnya
+    
     return authApi.getProfile()
   },
 

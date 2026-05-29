@@ -88,7 +88,7 @@ export default function Dashboard() {
             if (summaryCard) setAiSummary(summaryCard.text)
           }
         } catch {
-          // AI tidak tersedia — tidak tampilkan error, cukup skip
+          
         }
       } catch (err) {
         if (mounted) setError(err.message || 'Gagal memuat dashboard')
@@ -173,7 +173,7 @@ export default function Dashboard() {
       </div>
 
       <div className="dashboard-grid">
-        {/* Cashflow trend chart */}
+        {}
         <div className="panel large interactive-card cashflow-bar-card">
           <div className="panel-head cashflow-bar-head">
             <div>
@@ -202,7 +202,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Kategori chart */}
+        {}
         <div className="panel interactive-card">
           <div className="panel-head">
             <h2>Kategori Pengeluaran</h2>
@@ -223,7 +223,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Insight panel — AI atau rule-based */}
+        {}
         <div className={`panel interactive-card insight-panel ${aiLabel ? `insight-ai insight-${aiLabel?.toLowerCase()}` : 'insight-rule'}`}>
 
           <div className="insight-header">
@@ -295,7 +295,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Progress tabungan */}
+        {}
         <div className="panel progress-panel interactive-card">
           <h2>Progress Tabungan</h2>
           <div className="progress">
