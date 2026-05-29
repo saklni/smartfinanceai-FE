@@ -20,10 +20,6 @@ function useGoogleScript(clientId) {
     script.defer = true
     script.onload = () => setReady(true)
     document.head.appendChild(script)
-
-    return () => {
-      
-    }
   }, [clientId])
 
   return ready
@@ -40,19 +36,14 @@ export default function Auth() {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
-  const [successMsg, setSuccessMsg] = useState(
-    location.state?.passwordReset ? 'Password berhasil diubah! Silakan masuk dengan password baru.' : ''
+  const [successMsg] = useState(
+    location.state?.passwordReset ? 'Password berhasil diubah! Silakan masuk.' : ''
   )
 
   const googleReady = useGoogleScript(env.googleClientId)
-  
   const googleCallbackRef = useRef(null)
 
   const handleLoginRedirect = useCallback((user) => {
-    if (user.status === 'pending') {
-      navigate('/verify-otp', { state: { email: user.email } })
-      return
-    }
     if (!user.onboarding_completed && !user.onboardingCompleted) {
       navigate('/onboarding')
       return
@@ -64,7 +55,6 @@ export default function Auth() {
     navigate(redirectTo)
   }, [navigate, location.state])
 
-  
   const handleGoogleCallback = useCallback(async (response) => {
     if (!response?.credential) {
       setError('Login Google dibatalkan atau gagal.')
@@ -82,18 +72,15 @@ export default function Auth() {
     }
   }, [handleLoginRedirect])
 
-  
   useEffect(() => {
     googleCallbackRef.current = handleGoogleCallback
   }, [handleGoogleCallback])
 
-  
   useEffect(() => {
     if (!googleReady || !env.googleClientId || isRegister) return
 
     window.google.accounts.id.initialize({
       client_id: env.googleClientId,
-      
       callback: (response) => googleCallbackRef.current?.(response),
       auto_select: false,
       cancel_on_tap_outside: true,
@@ -140,12 +127,12 @@ export default function Auth() {
       setError('')
 
       if (isRegister) {
-        await authRepository.register({
+        const user = await authRepository.register({
           name: form.name.trim(),
           email: form.email.trim().toLowerCase(),
           password: form.password,
         })
-        navigate('/verify-otp', { state: { email: form.email.trim().toLowerCase() } })
+        handleLoginRedirect(user)
         return
       }
 
@@ -161,7 +148,6 @@ export default function Auth() {
     }
   }
 
-  
   const handleGoogleButtonClick = () => {
     if (!env.googleClientId) {
       setError('Google Client ID belum dikonfigurasi. Tambahkan VITE_GOOGLE_CLIENT_ID di .env')
@@ -185,7 +171,7 @@ export default function Auth() {
           <h1>{isRegister ? 'Mulai kelola keuanganmu' : 'Masuk ke akunmu'}</h1>
           <p>
             {isRegister
-              ? 'Daftar, verifikasi OTP, lalu lengkapi profil finansial awalmu.'
+              ? 'Daftar dan lengkapi profil finansial awalmu.'
               : 'Masuk untuk melanjutkan pengelolaan keuanganmu.'}
           </p>
         </div>
@@ -196,7 +182,6 @@ export default function Auth() {
         )}
         {error && <div className="form-alert error">{error}</div>}
 
-        {}
         {!isRegister && (
           <>
             {env.googleClientId ? (
@@ -207,10 +192,7 @@ export default function Auth() {
                     <span>Menghubungkan dengan Google...</span>
                   </div>
                 )}
-                {}
                 <div id="google-signin-btn" className={googleLoading ? 'hidden' : ''} />
-
-                {}
                 {!googleReady && !googleLoading && (
                   <button
                     type="button"
@@ -224,20 +206,14 @@ export default function Auth() {
                 )}
               </div>
             ) : (
-              
               <div className="google-signin-wrapper">
-                <button
-                  type="button"
-                  className="btn google-btn"
-                  onClick={handleGoogleButtonClick}
-                >
+                <button type="button" className="btn google-btn" onClick={handleGoogleButtonClick}>
                   <GoogleIcon />
                   Masuk dengan Google
                 </button>
                 <p className="google-hint">Tambahkan VITE_GOOGLE_CLIENT_ID di .env untuk mengaktifkan</p>
               </div>
             )}
-
             <div className="auth-divider">
               <span>atau masuk dengan email</span>
             </div>
@@ -292,12 +268,6 @@ export default function Auth() {
               </button>
             </div>
           </label>
-
-          {!isRegister && (
-            <div className="forgot-password-link">
-              <Link to="/forgot-password">Lupa password?</Link>
-            </div>
-          )}
 
           {isRegister && (
             <label className="form-group">

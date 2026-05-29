@@ -3,9 +3,7 @@ import { STORAGE_KEYS } from '../utils/storageKeys'
 import { normalizeUser } from '../utils/financeAdapters'
 
 function persistToken(result) {
-  
   const token = result?.token || result?.accessToken
-
   if (token) {
     localStorage.setItem(STORAGE_KEYS.accessToken, token)
   }
@@ -13,7 +11,6 @@ function persistToken(result) {
 }
 
 function extractUser(result) {
-  
   return normalizeUser(result?.user || result)
 }
 
@@ -30,11 +27,8 @@ export const authRepository = {
 
   async register(payload) {
     const result = await authApi.register(payload)
-    return {
-      ...result,
-      user: extractUser(result),
-      requiresOtp: result?.requiresOtp ?? result?.requires_otp ?? true,
-    }
+    persistToken(result)
+    return extractUser(result)
   },
 
   async loginWithGoogle(credential) {
@@ -43,23 +37,16 @@ export const authRepository = {
     return extractUser(result)
   },
 
-  async verifyOtp(payload) {
-    const result = await authApi.verifyOtp(payload)
-    persistToken(result)
-    return extractUser(result)
-  },
-
-  async resendOtp(payload) {
-    return authApi.resendOtp(payload)
-  },
-
   async getProfile() {
-    
     return authApi.getProfile()
   },
 
   async updateProfile(payload) {
     return authApi.updateProfile(payload)
+  },
+
+  async changePassword(payload) {
+    return authApi.changePassword(payload)
   },
 
   async logout() {

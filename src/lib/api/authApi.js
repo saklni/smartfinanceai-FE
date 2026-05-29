@@ -17,31 +17,6 @@ export async function loginWithGoogle(credential) {
   return unwrapApiResponse(response)
 }
 
-export async function verifyOtp(payload) {
-  const response = await axiosClient.post('/auth/verify-otp', payload)
-  return unwrapApiResponse(response)
-}
-
-export async function resendOtp(payload) {
-  const response = await axiosClient.post('/auth/resend-otp', payload)
-  return unwrapApiResponse(response)
-}
-
-export async function forgotPassword(payload) {
-  const response = await axiosClient.post('/auth/forgot-password', payload)
-  return unwrapApiResponse(response)
-}
-
-export async function verifyResetOtp(payload) {
-  const response = await axiosClient.post('/auth/verify-reset-otp', payload)
-  return unwrapApiResponse(response)
-}
-
-export async function resetPassword(payload) {
-  const response = await axiosClient.post('/auth/reset-password', payload)
-  return unwrapApiResponse(response)
-}
-
 export async function getProfile() {
   const response = await axiosClient.get('/auth/me')
   return normalizeUser(unwrapApiResponse(response))
@@ -50,4 +25,9 @@ export async function getProfile() {
 export async function updateProfile(payload) {
   const response = await axiosClient.put('/auth/me', toApiProfilePayload(payload))
   return normalizeUser(unwrapApiResponse(response))
+}
+
+export async function changePassword(payload) {
+  const response = await axiosClient.put('/auth/me/password', payload)
+  return unwrapApiResponse(response)
 }
